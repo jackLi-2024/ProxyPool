@@ -1,0 +1,30 @@
+{
+  "index_patterns": [
+    "proxy"
+  ],
+  "mappings": {
+    "proxy": {
+      "properties": {
+        "ip": {
+          "type": "keyword"
+        },
+        "port": {
+          "type": "keyword"
+        },
+        "location": {
+          "type": "keyword"
+        },
+        "createdTime": {
+          "type": "date"
+        },
+        "status": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "settings": {
+    "index.number_of_replicas": "0",
+    "index.number_of_shards": 10
+  }
+}
