@@ -68,7 +68,7 @@ class Main():
             process_list.append(p)
 
         while not stop_value.value:
-            result = self.es.read_more()
+            result = self.es.read_more()  
             for i in range(len(result)):
                 result[i]["_source"]["status"] = -1
             if result:

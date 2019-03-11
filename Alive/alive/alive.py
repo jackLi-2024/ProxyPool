@@ -13,6 +13,9 @@ import os
 import re
 import sys
 import json
+
+cur_dir = os.path.split(os.path.realpath(__file__))[0]
+sys.path.append("%s/../" % cur_dir)
 from lib import manager
 from SpiderTool import Request
 
@@ -41,11 +44,15 @@ class Alive():
 
 def first_alive(data, conf, alive_conf):
     data = json.loads(data)
+    
     proxies = [data.get("_source").get("ip") + ":" + data.get("_source").get("port")]
-    ali = Alive(conf=alive_conf, proxies=data)
+    
+    ali = Alive(conf=alive_conf, proxies=proxies)
     proxy = ali.https()
+    type_ = "http"
     if proxy:
         out = {"key": "https-" + proxy, "value": ""}
+	type_ = "https"
     else:
         proxy = ali.http()
         if proxy:
@@ -56,6 +63,7 @@ def first_alive(data, conf, alive_conf):
     es = manager.Es(conf=conf)
     rs1.write_one(out)
     data["_source"]["status"] = 1
+    data["_source"]["type"] = type_
     es.write_more([data])
 
 
@@ -64,6 +72,8 @@ def second_alive(conf, alive_conf, second_alive_stop):
     rs2 = manager.Rs(conf=conf, db="db2", try_time=1)
     while not second_alive_stop.value:
         result = rs1.read_one()
+	if not result:
+	    continue
         # result = "http-1.2.3.4:9999"
         if re.findall("http", result):
             proxies = [result.split("-")[1]]
@@ -82,7 +92,7 @@ def test():
             "alive_utl": "https://www.baidu.com"
         }
     }
-    proxies = ["124.93.201.59:42672", "61.164.39.68:53281"]
+    proxies = ["193.112.88.59:10001"]
     alive = Alive(conf=conf, proxies=proxies)
     print alive.http()
 
