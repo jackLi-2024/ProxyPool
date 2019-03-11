@@ -69,21 +69,19 @@ class Rs():
         port = int(self.db.get("port"))
         password = self.db.get("password", None)
         database = int(self.db.get("database", "0"))
-        r = redis.Redis(host=host, port=port, password=password)
-        self.response = None
-        for i in range(try_time):
-            try:
-                self.response = r.ping()
-                break
-            except:
-                continue
         pool = redis.ConnectionPool(host=host, port=port, password=password, db=database,
                                     socket_connect_timeout=float(self.connection_timeout),
                                     decode_responses=True)
         self.rs = redis.Redis(connection_pool=pool)
-        del r
-        if not self.response:
-            del self.rs
+        self.response = None
+        for i in range(try_time):
+            try:
+                self.response = self.rs.ping()
+                break
+            except:
+                continue
+        if self.response== None:
+            raise (AssertionError,"Connect redis defeat")
 
     def write_one(self, data):
         """
@@ -128,12 +126,12 @@ def test():
             "connection_timeout": "1"
         }
     }
-    # es = Es(conf)
-    # print len(es.read_more())
-    rs = Rs(conf=conf, db="db1")
-    data = {"key": "hello", "value": "lijiacai"}
-    rs.write_one(data)
-    print rs.read_one()
+    es = Es(conf)
+    print len(es.read_more())
+    # rs = Rs(conf=conf, db="db1")
+    # data = {"key": "hello", "value": "lijiacai"}
+    # rs.write_one(data)
+    # print rs.read_one()
 
 
 if __name__ == '__main__':
