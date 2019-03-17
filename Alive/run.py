@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import json
+import setproctitle
 from lib import manager
 from alive import alive
 from alive.alive import first_alive
@@ -23,7 +24,7 @@ from Producer_Consumer.QueueTool import QueueConsumer
 from Producer_Consumer.QueueTool import QueueConsumerProcess
 from loggingtool import loggingtool
 
-logging = loggingtool.init_log("alive", "filetime", level="DEBUG", when="h", backupCount=5,
+logging = loggingtool.init_log("alive", "filetime", level="DEBUG", when="M", backupCount=5,
                                filename="./log/alive.log")
 
 
@@ -85,4 +86,5 @@ class Main():
 
 
 if __name__ == '__main__':
+    setproctitle.setproctitle("lijiacai_alive")
     Main()

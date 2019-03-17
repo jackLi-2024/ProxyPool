@@ -13,12 +13,13 @@ import os
 import sys
 import json
 import time
+import setproctitle
 from spider import spider
 from lib import manager
 from SpiderTool import Request
 import hashlib
 from loggingtool import loggingtool
-logging = loggingtool.init_log("proxy", "filetime", level="DEBUG", when="h", backupCount=5,
+logging = loggingtool.init_log("proxy", "filetime", level="DEBUG", when="M", backupCount=5,
                        filename="./log/proxy.log")
 
 class Main():
@@ -70,4 +71,5 @@ class Main():
 
 
 if __name__ == '__main__':
+    setproctitle.setproctitle("lijiacai_spider")
     Main()
